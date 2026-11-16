@@ -41,6 +41,22 @@ export const STUDIO_MODELS: ModelOption[] = [
     supportedThinkingLevels: ["MINIMAL", "LOW", "MEDIUM", "HIGH"],
     defaultThinkingLevel: "LOW",
   },
+  {
+    id: "claude-opus-5-5",
+    name: "Claude Opus 5.5",
+    shortName: "Claude Opus",
+    tagline: "Anthropic flagship reasoning and agentic coding",
+    supportedThinkingLevels: ["LOW"],
+    defaultThinkingLevel: "LOW",
+  },
+  {
+    id: "gpt-5.5",
+    name: "GPT-5.5",
+    shortName: "GPT-5.5",
+    tagline: "OpenAI reasoning and coding",
+    supportedThinkingLevels: ["LOW"],
+    defaultThinkingLevel: "LOW",
+  },
 ];
 
 export const DEFAULT_PLUGINS: StudioPlugin[] = [
