@@ -62,7 +62,7 @@ function workspacePrompt(params: StudioAssistParams) {
     .map(([path, value]) => `- ${path} (${value.split("\n").length} lines)`);
   const active = params.activeFile && params.files[params.activeFile] !== undefined
     ? params.files[params.activeFile].length <= 12000
-      ? `\nCurrent Active File (${params.activeFile}):\n`${params.files[params.activeFile]}``
+      ? "\nCurrent Active File (" + params.activeFile + "):\n" + params.files[params.activeFile]
       : `\nCurrent Active File: ${params.activeFile} (use view_file to inspect)`
     : "";
   return `Workspace Files (${files.length}):\n${files.join("\n")}${active}\n\nUser Request:\n${params.prompt}`;
