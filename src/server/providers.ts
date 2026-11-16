@@ -176,7 +176,7 @@ export async function runProviderAssistStream(
         system,
         messages,
         tools: tools as any,
-      });
+      }, callbacks.signal ? { signal: callbacks.signal } : undefined);
       totalTokens += (response.usage?.input_tokens ?? 0) + (response.usage?.output_tokens ?? 0);
       const textParts = response.content.filter((part: any) => part.type === "text").map((part: any) => part.text);
       if (textParts.length) {
@@ -218,7 +218,7 @@ export async function runProviderAssistStream(
         input,
         tools: openAITools() as any,
         max_output_tokens: Math.min(32000, Math.max(1024, Number(process.env.MAX_REPLY_TOKENS || 8192))),
-      });
+      }, callbacks.signal ? { signal: callbacks.signal } : undefined);
       totalTokens += response.usage?.total_tokens ?? 0;
       if (response.output_text) {
         finalText = [finalText, response.output_text].filter(Boolean).join("\n\n");
