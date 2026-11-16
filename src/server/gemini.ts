@@ -7,6 +7,7 @@ import {
 import { bundleProjectFiles } from "./bundler.ts";
 import { runProjectTerminalCommand } from "./terminal.ts";
 import { searchKnowledge } from "./knowledge.ts";
+import { runProviderAssistStream } from "./providers.ts";
 
 const MAX_REPLY_TOKENS = Math.min(32000, Math.max(256, Number(process.env.MAX_REPLY_TOKENS || 8192)));
 const MAX_HISTORY_MESSAGES = Math.min(60, Math.max(4, Number(process.env.MAX_HISTORY_MESSAGES || 20)));
@@ -273,7 +274,7 @@ export interface StudioAssistParams {
   fallbackOnQuota?: boolean;
 }
 
-const AGENT_TOOL_DECLARATIONS: FunctionDeclaration[] = [
+export const AGENT_TOOL_DECLARATIONS: FunctionDeclaration[] = [
   {
     name: "list_files",
     description:
@@ -419,7 +420,7 @@ const AGENT_TOOL_DECLARATIONS: FunctionDeclaration[] = [
   },
 ];
 
-function formatToolLabel(name: string, args: Record<string, unknown>): string {
+export function formatToolLabel(name: string, args: Record<string, unknown>): string {
   const filePath = typeof args.path === "string" ? args.path : "";
   switch (name) {
     case "list_files":
@@ -447,7 +448,7 @@ function normalizePath(p: string): string {
   return p.replace(/^\/+/, "").replace(/\\/g, "/").trim();
 }
 
-async function executeAgentTool(
+export async function executeAgentTool(
   name: string,
   args: Record<string, unknown>,
   workingFiles: Record<string, string>,
@@ -722,7 +723,7 @@ function coalesceModelParts(rawParts: RawPart[]): RawPart[] {
   return out;
 }
 
-function computeFileOperations(
+export function computeFileOperations(
   initialFiles: Record<string, string>,
   finalFiles: Record<string, string>
 ): { operations: FileOperationResult[]; summary: string } {
@@ -754,7 +755,7 @@ function computeFileOperations(
   return { operations, summary };
 }
 
-function buildAgentSystemInstruction(params: StudioAssistParams): string {
+export function buildAgentSystemInstruction(params: StudioAssistParams): string {
   const {
     systemInstruction,
     activePlugins = [],
@@ -933,6 +934,10 @@ export async function runStudioAssistStream(
     signal?: AbortSignal;
   }
 ) {
+  if (params.model.startsWith("claude-") || params.model.startsWith("gpt-")) {
+    return runProviderAssistStream(params, callbacks);
+  }
+
   const ai = getGeminiClient();
   const startedAt = Date.now();
   const MAX_AGENT_TURNS = 12;
