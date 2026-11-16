@@ -7,7 +7,6 @@ import {
 import { bundleProjectFiles } from "./bundler.ts";
 import { runProjectTerminalCommand } from "./terminal.ts";
 import { searchKnowledge } from "./knowledge.ts";
-import { runProviderAssistStream } from "./providers.ts";
 
 const MAX_REPLY_TOKENS = Math.min(32000, Math.max(256, Number(process.env.MAX_REPLY_TOKENS || 8192)));
 const MAX_HISTORY_MESSAGES = Math.min(60, Math.max(4, Number(process.env.MAX_HISTORY_MESSAGES || 20)));
@@ -935,7 +934,8 @@ export async function runStudioAssistStream(
   }
 ) {
   if (params.model.startsWith("claude-") || params.model.startsWith("gpt-")) {
-    return runProviderAssistStream(params, callbacks);
+    const provider = await import("./providers.ts");
+    return provider.runProviderAssistStream(params, callbacks);
   }
 
   const ai = getGeminiClient();
