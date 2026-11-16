@@ -1,5 +1,5 @@
+import type { FunctionDeclaration } from "@google/genai";
 import {
-  FunctionDeclaration,
   GoogleGenAI,
   ThinkingLevel,
   Type,
@@ -330,7 +330,7 @@ export const AGENT_TOOL_DECLARATIONS: FunctionDeclaration[] = [
     description:
       "Create a new file or completely overwrite an existing file with complete, production-ready code.",
     parameters: {
-      type: Type.OBJECT,
+      type: Type.STRING,
       properties: {
         path: {
           type: Type.STRING,
@@ -349,7 +349,7 @@ export const AGENT_TOOL_DECLARATIONS: FunctionDeclaration[] = [
     description:
       "Make a surgical edit to an existing file by replacing an exact target_content block with replacement_content.",
     parameters: {
-      type: Type.OBJECT,
+      type: Type.STRING,
       properties: {
         path: {
           type: Type.STRING,
@@ -371,7 +371,7 @@ export const AGENT_TOOL_DECLARATIONS: FunctionDeclaration[] = [
     name: "delete_file",
     description: "Delete a file from the project workspace.",
     parameters: {
-      type: Type.OBJECT,
+      type: Type.STRING,
       properties: {
         path: {
           type: Type.STRING,
@@ -386,7 +386,7 @@ export const AGENT_TOOL_DECLARATIONS: FunctionDeclaration[] = [
     description:
       "Compile and bundle all current project files using the live preview esbuild bundler to verify zero syntax, import, JSX, or build errors. Always run after code changes.",
     parameters: {
-      type: Type.OBJECT,
+      type: Type.STRING,
       properties: {},
     },
   },
@@ -395,7 +395,7 @@ export const AGENT_TOOL_DECLARATIONS: FunctionDeclaration[] = [
     description:
       "Execute a shell or git command in the project workspace directory (e.g., node script checks, git status, ls). Cannot push to GitHub without user approval.",
     parameters: {
-      type: Type.OBJECT,
+      type: Type.STRING,
       properties: {
         command: {
           type: Type.STRING,
@@ -410,7 +410,7 @@ export const AGENT_TOOL_DECLARATIONS: FunctionDeclaration[] = [
     description:
       "Search the project's knowledge library (text, Markdown, CSV, JSON and Word files the user uploaded) for passages relevant to a question. Use it when the answer may be in the user's own documents.",
     parameters: {
-      type: Type.OBJECT,
+      type: Type.STRING,
       properties: {
         query: { type: Type.STRING, description: "Keywords or a short question to search for." },
       },
@@ -510,7 +510,7 @@ export async function executeAgentTool(
     try {
       regex = new RegExp(pattern, "i");
     } catch {
-      regex = new RegExp(pattern.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "i");
+      regex = new RegExp(pattern.replace(/[.*+?^${}|[\]\\]/g, "\\$&"), "i");
     }
     const matches: Array<{ path: string; line: number; text: string }> = [];
     for (const [filePath, content] of Object.entries(workingFiles)) {
