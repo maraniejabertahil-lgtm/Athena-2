@@ -1,7 +1,9 @@
 export type StudioModelId =
   | "gemini-4-hydrogen"
   | "gemini-3.5-flash-lite"
-  | "gemini-3.1-flash-lite";
+  | "gemini-3.1-flash-lite"
+  | "claude-opus-5-5"
+  | "gpt-5.5";
 
 export type ThinkingDepth = "MINIMAL" | "LOW" | "MEDIUM" | "HIGH" | "XHIGH";
 
