@@ -1,0 +1,58 @@
+name: Extract Version 8.6 archive
+
+on:
+  push:
+    branches: [Claude]
+    paths:
+      - ".github/workflows/extract-version-8-6.yml"
+      - "Version 8.6/personal-ai-studio-v8.6.zip"
+
+permissions:
+  contents: write
+
+jobs:
+  extract:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: Claude
+          persist-credentials: true
+      - name: Extract archive safely
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          from zipfile import ZipFile
+          import shutil
+
+          archive = Path("Version 8.6/personal-ai-studio-v8.6.zip")
+          target = Path("Version 8.6")
+          root = target.resolve()
+
+          with ZipFile(archive) as z:
+              for info in z.infolist():
+                  name = info.filename.replace("\\", "/")
+                  if name.startswith("/") or ".." in Path(name).parts:
+                      raise SystemExit(f"Unsafe archive path: {name}")
+                  dest = (target / name).resolve()
+                  if dest != root and root not in dest.parents:
+                      raise SystemExit(f"Archive path escapes target: {name}")
+                  if info.is_dir():
+                      dest.mkdir(parents=True, exist_ok=True)
+                  else:
+                      dest.parent.mkdir(parents=True, exist_ok=True)
+                      with z.open(info) as src, open(dest, "wb") as out:
+                          shutil.copyfileobj(src, out)
+
+          archive.unlink()
+          (target / ".gitkeep").unlink(missing_ok=True)
+          PY
+      - name: Commit extracted files and remove ZIP
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A "Version 8.6"
+          if ! git diff --cached --quiet; then
+            git commit -m "Extract Version 8.6 project archive"
+            git push origin HEAD:Claude
+          fi
