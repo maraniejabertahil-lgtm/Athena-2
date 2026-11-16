@@ -1,0 +1,22 @@
+{
+  "name": "personal-ai-studio",
+  "version": "8.6.0",
+  "private": true,
+  "type": "module",
+  "description": "Model-independent personal AI studio with accounts, per-user memory, image generation and understanding, video frame understanding, security hardening, and a user-managed skills library.",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node --watch src/server.js",
+    "test": "node --test"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "@modelcontextprotocol/sdk": "^1.12.1",
+    "cookie-parser": "^1.4.7",
+    "playwright": "^1.56.1"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

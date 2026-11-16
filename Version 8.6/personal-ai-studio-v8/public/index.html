@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="A private, model-independent personal AI assistant studio.">
+  <title>Personal AI Studio</title><link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <div id="authGate" class="auth-gate" hidden>
+    <form id="authForm" class="auth-card">
+      <div class="brand-icon">✦</div><h2 id="authTitle">Sign in to your studio</h2>
+      <p id="authHelp">Your account keeps your memory private.</p>
+      <label>Email</label><input id="authEmail" type="email" autocomplete="username" required>
+      <label>Password</label><input id="authPassword" type="password" minlength="12" autocomplete="current-password" required>
+      <button id="authSubmit" type="submit">Sign in</button>
+      <p id="authError" class="status-note" aria-live="polite"></p>
+    </form>
+  </div>
+  <aside class="sidebar">
+    <div class="brand"><div class="brand-icon">✦</div><div><b>Personal AI</b><small>Studio</small></div></div>
+    <button id="newChat" class="new-chat">＋ New conversation</button>
+    <div class="nav-label">WORKSPACE</div>
+    <a class="nav active" href="#chat">◈ Chat</a>
+    <a class="nav" href="#files">▤ Project files</a>
+    <a class="nav" href="#memory">♥ Memory</a>
+    <a class="nav" href="#approvals">✓ Approvals</a>
+    <a class="nav" href="#knowledge">▤ Knowledge base</a>
+    <a class="nav" href="#architecture">⌘ Architecture</a>
+    <a class="nav" href="#skills">◇ Skills library</a>
+    <div class="sidebar-bottom"><span class="dot"></span><span id="providerStatus">Checking engine…</span></div>
+  </aside>
+  <main>
+    <header><div><span class="eyebrow">YOUR PRIVATE WORKSPACE</span><h1>What shall we work on?</h1><p>Your assistant, your rules, your model provider.</p></div><div class="model-pill"><span class="dot"></span><span id="modelName">Model connection</span><button id="logoutButton" type="button" class="small-button">Sign out</button></div></header>
+    <section class="chat-wrap" id="chat">
+      <div class="welcome" id="welcome">
+        <div class="orb">✦</div><h2>How can I help today?</h2><p>Ask a question, plan a project, or work through a coding problem.</p>
+        <div class="suggestions">
+          <button class="suggestion">Help me plan a web application</button>
+          <button class="suggestion">Explain a programming error</button>
+          <button class="suggestion">Review my project structure</button>
+        </div>
+      </div>
+      <div id="messages" class="messages" aria-live="polite"></div>
+      <form id="chatForm" class="composer">
+        <label class="sr-only" for="prompt">Message your assistant</label>
+        <textarea id="prompt" rows="1" placeholder="Message your assistant…" required></textarea>
+        <button type="button" id="voiceInput" class="voice-button" title="Use browser voice input">🎙</button>
+        <button type="button" id="speakToggle" class="voice-button" aria-pressed="false" title="Spoken replies: off">🔇</button>
+        <button type="button" id="handsFreeToggle" class="voice-button" aria-pressed="false" title="Hands-free: off">🎧</button>
+        <div class="composer-foot"><span>AI can make mistakes. Check important results.</span><button id="send" type="submit">Send ↑</button></div>
+      </form>
+    </section>
+    <section class="management-grid" id="browser-tools">
+      <article class="info-card wide-card"><span class="card-icon">◎</span><h3>Browser steps</h3><p>Write up to 12 steps, one per line, on a trusted website. Only sites in BROWSER_ALLOWED_DOMAINS are allowed. Payments, orders, deletions, passwords and card details are blocked. Example:<br>go https://example.com<br>click Contact us<br>type Your name | Jane<br>read</p><form id="browserForm" class="write-form"><textarea id="browserSteps" rows="5" placeholder="go https://example.com" required></textarea><button type="submit">Review and run steps</button></form><pre id="browserResult" class="status-note"></pre></article>
+    </section>
+    <section class="management-grid" id="knowledge">
+      <article class="info-card wide-card"><span class="card-icon">▤</span><h3>Private knowledge base</h3><p>Add text, Markdown, JSON, CSV or Word (.docx) files. The assistant can search their contents when you chat. Files are stored locally.</p>
+        <form id="knowledgeForm" class="mini-form"><input id="knowledgeFile" type="file" accept=".txt,.md,.json,.csv,.docx" required><button type="submit">Add to knowledge</button></form><div id="knowledgeList" class="memory-list"></div>
+      </article>
+    </section>
+    <section class="management-grid" id="media-tools">
+      <article class="info-card wide-card"><span class="card-icon">▧</span><h3>Image understanding</h3><p>Upload a picture and ask the assistant what it shows. Images are sent to your chosen AI model.</p><form id="imageUnderstandForm" class="write-form"><input id="imageUnderstandFile" type="file" accept="image/png,image/jpeg,image/webp,image/gif" required><textarea id="imageQuestion" rows="2" placeholder="What is in this picture?" required></textarea><button type="submit">Understand image</button></form><pre id="imageUnderstandResult" class="status-note"></pre></article>
+      <article class="info-card wide-card"><span class="card-icon">✧</span><h3>Image generation</h3><p>Create a new image from a written idea. This needs an image API key and model in your server settings.</p><form id="imageGenerateForm" class="write-form"><textarea id="imagePrompt" rows="3" placeholder="A cozy treehouse in a rainy forest, storybook style" required></textarea><button type="submit">Review and create image</button></form><div id="imageGenerateResult" class="status-note"></div></article>
+      <article class="info-card wide-card"><span class="card-icon">▶</span><h3>Video understanding</h3><p>Upload a short video. The app samples a set number of frames (8 by default, set in your settings) and asks your AI model to explain what happens. Audio is not analyzed. FFmpeg must be installed.</p><form id="videoUnderstandForm" class="write-form"><input id="videoFile" type="file" accept="video/mp4,video/webm,video/quicktime" required><textarea id="videoQuestion" rows="2" placeholder="Summarize the main events." required></textarea><button type="submit">Understand video</button></form><pre id="videoUnderstandResult" class="status-note"></pre></article>
+    </section>
+    <section class="management-grid" id="memory">
+      <article class="info-card wide-card"><span class="card-icon">♥</span><h3>Your memory</h3><p>Only notes you add here are saved on this server. You can remove them at any time.</p>
+        <form id="memoryForm" class="mini-form"><input id="memoryText" maxlength="1000" placeholder="Example: I prefer short, simple explanations" required><button type="submit">Save memory</button></form>
+        <div id="memoryList" class="memory-list"></div>
+      </article>
+      <article class="info-card wide-card" id="approvals"><span class="card-icon">✓</span><h3>File write approval</h3><p>Writing a file changes your workspace. Review the file name and contents, then approve the action yourself.</p>
+        <form id="writeForm" class="write-form"><input id="writePath" placeholder="example.txt" required><textarea id="writeContent" rows="4" placeholder="Text to save…" required></textarea><button type="submit">Review and approve</button></form>
+        <p id="approvalStatus" class="status-note" aria-live="polite"></p>
+      </article>
+    </section>
+    <section class="info-grid">
+      <article class="info-card"><span class="card-icon">⌘</span><h3>Model-independent</h3><p>Connect an OpenAI-compatible provider or Anthropic through server-side settings.</p></article>
+      <article class="info-card"><span class="card-icon">▤</span><h3>Controlled tools</h3><p>Workspace tools are limited to the local workspace. File writes require approval.</p></article>
+      <article class="info-card"><span class="card-icon">◇</span><h3>Your skills library</h3><p>Intentionally excluded from this project. No skill files are loaded or executed.</p></article>
+    </section>
+    <section class="management-grid" id="advanced-tools">
+      <article class="info-card wide-card"><span class="card-icon">◎</span><h3>Controlled browser inspection</h3><p>Inspect page text on domains you explicitly allow in your server settings. Every inspection needs your approval.</p><form id="browserForm" class="mini-form"><input id="browserUrl" type="url" placeholder="https://trusted.example/page" required><button type="submit">Review and inspect</button></form><pre id="browserResult" class="status-note"></pre></article>
+      <article class="info-card wide-card"><span class="card-icon">⌘</span><h3>Isolated code sandbox</h3><p>JavaScript runs only inside Docker with no network, low memory, limited CPU and a short timeout. Docker must be installed.</p><form id="codeForm" class="write-form"><textarea id="codeInput" rows="5" placeholder="console.log(1 + 1)" required></textarea><button type="submit">Review and run</button></form><pre id="codeResult" class="status-note"></pre></article>
+    </section>
+    <footer>Personal AI Studio · Local-first starter · No API keys are stored in the browser</footer>
+  </main>
+  <script src="/app.js"></script>
+  <script src="/code-tools.js"></script>
+</body></html>
