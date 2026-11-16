@@ -1,0 +1,6 @@
+{
+  "name": "Hydrogen Studio",
+  "description": "Personal AI studio workbench powered by Gemini 4 Hydrogen, Flash Lite, Speech Synthesis, and Audio Transcription.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
