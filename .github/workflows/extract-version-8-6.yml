@@ -3,9 +3,6 @@ name: Extract Version 8.6 archive
 on:
   push:
     branches: [Claude]
-    paths:
-      - ".github/workflows/extract-version-8-6.yml"
-      - "Version 8.6/personal-ai-studio-v8.6.zip"
 
 permissions:
   contents: write
