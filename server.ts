@@ -19,6 +19,11 @@ import {
   pushProjectToGitHub,
 } from "./src/server/github.ts";
 import { runProjectTerminalCommand } from "./src/server/terminal.ts";
+import {
+  addKnowledgeFile,
+  listKnowledgeFiles,
+  removeKnowledgeFile,
+} from "./src/server/knowledge.ts";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -350,6 +355,34 @@ async function startServer() {
           err instanceof Error ? err.message : "Terminal execution failed.",
       });
     }
+  });
+
+  // --- Project Knowledge Library ---
+  app.get("/api/knowledge/:projectId", (req, res) => {
+    res.json({ files: listKnowledgeFiles(req.params.projectId) });
+  });
+
+  app.post("/api/knowledge/:projectId", (req, res) => {
+    try {
+      const { name = "", content = "", encoding = "text" } = req.body as {
+        name?: string;
+        content?: string;
+        encoding?: "text" | "base64";
+      };
+      if (!content) {
+        res.status(400).json({ error: "File content is empty." });
+        return;
+      }
+      const info = addKnowledgeFile(req.params.projectId, name, content, encoding);
+      res.json({ id: info.id, name: info.name, chunks: info.chunks.length });
+    } catch (err) {
+      res.status(400).json({ error: err instanceof Error ? err.message : "Upload failed." });
+    }
+  });
+
+  app.delete("/api/knowledge/:projectId/:fileId", (req, res) => {
+    const removed = removeKnowledgeFile(req.params.projectId, req.params.fileId);
+    res.status(removed ? 200 : 404).json({ removed });
   });
 
   // --- AI Project Assistant Route ---
